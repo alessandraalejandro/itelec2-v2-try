@@ -339,7 +339,8 @@ class ADMIN
         $mail->setFrom($smtp_email, "Alessandra");
         $mail->Subject = $subject;
         $mail->msgHTML($message);
-        $mail->Send();
+
+        return $mail->Send();
     }
 
 
@@ -378,7 +379,100 @@ class ADMIN
         return $stmt;
     }
 
+
+
+
+
+
+
+
+
+    // LINK METHOD FOR THE FORGOT PASSWORD (Not working)
+    public function forgotPassword($csrf_token, $email)
+    {
+        try {
+            if (!isset($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+                echo "<script>alert('Invalid CSRF Token.'); window.location.href = '../../../';</script>";
+                exit;
+            }
+
+            unset($_SESSION['csrf_token']);
+
+            // Check if the email exists
+            $stmt = $this->runQuery("SELECT * FROM user WHERE email= :email");
+            $stmt->execute(array(":email" => $email));
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                // For creating a new rest link
+                // Generate new token
+
+                $token = bin2hex(random_bytes(32));
+
+                // Update the tokencode in the DB
+                $stmt = $this->runQuery("UPDATE user SET tokencode= :tokencode WHERE email = :email");
+                $stmt->execute(array(":tokencode" => $token, ":email" => $email));
+
+                // Send Email
+                $url = "http://localhost/PHP-Websites/itelec2-v2-try/reset-password.php?token=" . $token;
+                $subject = "PASSWORD RESET - REQUEST LINK";
+                $message = "Click the following link to reset your password: " . $url;
+
+                $this->send_email($email, $message, $subject, $this->smtp_email, $this->smtp_password);
+                echo "<script>alert('The Link for Reset Password Request was sent to $email'); window.location.href='../../../';</script>";
+            } else {
+                echo "<script>alert('Email not found or not active, please register the account first.'); window.location.href = '../../../';</script>";
+            }
+
+        } catch (PDOException $e) {
+            echo $e->getMessage();
+            echo "<script>alert('An error occurred. Please try again later.'); window.location.href = '../../../';</script>";
+            exit;
+        }
+    }
+
+    public function resetPassword($csrf_token, $token, $newPassword, $confirmPassword)
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // CSRF check
+            if (!isset($csrf_token) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+                echo "<script>alert('Invalid CSRF Token.'); window.location.href = '../../../';</script>";
+                exit;
+            }
+
+            unset($_SESSION['csrf_token']);
+    
+            // Password match check
+            if ($newPassword !== $confirmPassword) {
+                echo "<script>alert('Passwords do not match.'); window.history.back();</script>";
+                exit;
+            }
+    
+            // Hash password (use password_hash() instead of md5)
+            //$hash_password = password_hash($newPassword, PASSWORD_DEFAULT);
+            $hash_password = md5($newPassword);
+    
+            // Find user by token
+            $stmt = $this->runQuery("SELECT * FROM user WHERE tokencode = :token");
+            $stmt->execute(array(":token" => $token));
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                // Update password
+                $stmt = $this->runQuery("UPDATE user SET password = :password WHERE id = :id");
+                $stmt->execute(array(":password" => $hash_password, ":id" => $user['id']));
+
+                echo "<script>alert('Password has been reset successfully.'); window.location.href = '../../../';</script>";
+            } else {
+                echo "<script>alert('Invalid or expired token.'); window.location.href = '../../../';</script>";
+            }
+        }
+    }
+
+
+
 }
+
 
 
 
@@ -430,5 +524,37 @@ if (isset($_GET['admin_signout'])) {
     $adminSignout->adminSignout();
 }
 
+
+
+
+
+
+// FORGOT PASSWORD FOR OTP REQUEST
+// if (isset($_POST['btn-find-email'])) {
+//     $csrf_token = trim($_POST['csrf_token']);
+//     $email = trim($_POST['email']);
+
+//     $otp = rand(100000, 999999);
+
+//     $resetRequest = new ADMIN();
+//     $resetRequest->sendOtp($otp, $email);
+// }
+
+// FORGOT PASSWORD FOR LINK REQUEST
+if (isset($_POST['btn-find-email'])) {
+    $email = trim($_POST['email']);
+
+    $resetRequest = new ADMIN();
+    $resetRequest->forgotPassword($csrf_token, $email);
+}
+if (isset($_POST['btn-reset-password'])) {
+    $newPassword = trim($_POST['newPassword']);
+    $confirmPassword = trim($_POST['confirmPassword']);
+    $csrf_token = trim($_POST['csrf_token']);
+    $token = $_POST['token'];
+
+    $admin = new ADMIN();
+    $admin->resetPassword($csrf_token, $token, $newPassword, $confirmPassword);
+}
 
 ?>

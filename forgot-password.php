@@ -1,3 +1,9 @@
+<?php
+
+include_once 'config/settings-configuration.php'
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,11 +17,12 @@
 
     <div class="container">
         <h1>FIND YOUR ACCOUNT</h1>
-        <form action="post">
+        <form action="dashboard/admin/authentication/admin-class.php" method="POST">
+        <input type="hidden" name="csrf_token" value="<?php echo $csrf_token ?>">
         
         <div class="container">
             <label for="find-email" class="form-label">Email Address: </label>
-            <input type="email" name="email" id="find-email" class="form-control" placeholder="Enter Email" required>
+            <input type="email" name="email" id="email" class="form-control" placeholder="Enter Email" required>
         </div>
 
         <br>

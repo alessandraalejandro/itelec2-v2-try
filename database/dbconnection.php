@@ -17,7 +17,7 @@ class Database
 
             $this->host = 'localhost'; // http://localhost/ITELEC2-V2/ for laptop | http://localhost:8080/ITELEC2-V2/ for pc in comlab2
             $this->db_name = 'itelec2-try';
-            $this->port = '3308'; // 3307 for laptop, 3308 for pc in comlab2
+            $this->port = '3307'; // 3307 for laptop, 3308 for pc in comlab2
             $this->username = 'root';
             $this->password = '';
 

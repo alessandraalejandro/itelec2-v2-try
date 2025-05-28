@@ -44,7 +44,7 @@ include_once 'config/settings-configuration.php'
         </form>
         </div>
 
-        <br> <br> <br>
+        <br> <br> <br> <br> <br>
 
     <div class="container">
         <h1>REGISTRATION </h1>
