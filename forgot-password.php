@@ -9,12 +9,18 @@
 </head>
 <body>
 
-    <div class="mb-3">
+    <div class="container">
         <h1>FIND YOUR ACCOUNT</h1>
         <form action="post">
-            <label for="find-email">Email Address: </label>
-            <input type="email" name="email" id="find-email" placeholder="Enter Email" required>
-            <button type="submit" name="btn-find-email">Search Email</button>
+        
+        <div class="container">
+            <label for="find-email" class="form-label">Email Address: </label>
+            <input type="email" name="email" id="find-email" class="form-control" placeholder="Enter Email" required>
+        </div>
+
+        <br>
+
+            <button type="submit" name="btn-find-email" class="btn btn-primary">Search Email</button>
         </form>
     </div>
     

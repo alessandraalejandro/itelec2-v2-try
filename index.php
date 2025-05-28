@@ -16,31 +16,62 @@ include_once 'config/settings-configuration.php'
 </head>
 <body>
 
-    <div class="mb-3">
+    <div class="container-fluid">
+    <div class="container">
         <h1>SIGN IN</h1>
         <form action="dashboard/admin/authentication/admin-class.php" method="POST">
             <input type="hidden" name="csrf_token" value="<?php echo $csrf_token ?>">
-            <label for="signin-email">Email Address:</label>
-            <input type="email" name="email" id="signin-email" placeholder="Enter Email" required><br>
-            <label for="signin-password">Password:</label>
-            <input type="password" name="password" id="signin-password" placeholder="Enter Password" required><br>
-            <a href="forgot-password.php">Forgot Password</a>
-            <button type="submit" name="btn-signin">SIGN IN</button>
-        </form>
-    </div>
+            
+            <div class="container">
+            <label for="signin-email" class="form-label">Email Address:</label>
+            <input type="email" name="email" id="signin-email" class="form-control" placeholder="Enter Email" required>
+            </div>
+            
+            <div class="container">
+            <label for="signin-password" class="form-label">Password:</label>
+            <input type="password" name="password" id="signin-password" class="form-control" placeholder="Enter Password" required>
+            </div>
 
-    <div class="mb-3">
+            <br>
+
+            <div class="form-group">
+            <a href="forgot-password.php">Forgot Password</a>
+            </div>
+
+            <br>
+
+            <button type="submit" class="btn btn-primary" name="btn-signin">SIGN IN</button>
+        </form>
+        </div>
+
+        <br> <br> <br>
+
+    <div class="container">
         <h1>REGISTRATION </h1>
         <form action="dashboard/admin/authentication/admin-class.php" method="POST">
             <input type="hidden" name="csrf_token" value="<?php echo $csrf_token ?>">
-            <label for="register-username">Username:</label>
-            <input type="text" name="username" id="register-username" placeholder="Enter Username" required><br>
-            <label for="register-email">Email Address:</label>
-            <input type="email" name="email" id="register-email" placeholder="Enter Email" required><br>
-            <label for="register-password">Password:</label>
-            <input type="password" name="password" id="register-password" placeholder="Enter Password" required><br>
-            <button type="submit" name="btn-signup">SIGN UP</button>
+            
+            <div class="container">
+            <label for="register-username" class="form-label">Username:</label>
+            <input type="text" name="username" id="register-username" class="form-control" placeholder="Enter Username" required>
+            </div>
+            
+            <div class="container">
+            <label for="register-email" class="form-label">Email Address:</label>
+            <input type="email" name="email" id="register-email" class="form-control" placeholder="Enter Email" required>
+            </div>
+
+            <div class="container">
+            <label for="register-password" class="form-label">Password:</label>
+            <input type="password" name="password" id="register-password" class="form-control" placeholder="Enter Password" required>
+            </div>
+
+            <br>
+
+            <button type="submit" class="btn btn-primary" name="btn-signup">SIGN UP</button>
         </form>
+    </div>
+
     </div>
     
     
