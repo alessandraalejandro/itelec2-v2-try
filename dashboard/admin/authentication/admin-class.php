@@ -37,7 +37,6 @@ class ADMIN
 
             echo "<script>alert('No Email Found.'); window.location.href = '../../../';</script>";
             exit;
-
         } else {
 
             $stmt = $this->runQuery("SELECT * FROM user WHERE email = :email");
@@ -48,7 +47,6 @@ class ADMIN
 
                 echo "<script>alert('Email already taken. Please try another one.'); window.location.href = '../../../';</script>";
                 exit;
-
             } else {
 
                 $_SESSION['OTP'] = $otp;
@@ -124,9 +122,7 @@ class ADMIN
 
                 $this->send_email($email, $message, $subject, $this->smtp_email, $this->smtp_password);
                 echo "<script>alert('We sent the OTP to $email'); window.location.href = '../../../verify-otp.php';</script>";
-
             }
-
         }
     }
 
@@ -243,7 +239,7 @@ class ADMIN
         }
 
         unset($_SESSION['csrf_token']);
-        
+
         //$hash_password = password_hash($password, PASSWORD_DEFAULT);
         $hash_password = md5($password);
 
@@ -263,7 +259,6 @@ class ADMIN
             echo "<script>alert('Invalid CSRF Token.'); window.location.href = '../../../';</script>";
             exit;
         }
-
     }
 
 
@@ -304,13 +299,9 @@ class ADMIN
                 echo "<script>alert('No account found'); window.location.href='../../../';</script>";
                 exit;
             }
-
         } catch (PDOException $ex) {
             echo $ex->getMessage();
-
         }
-
-
     }
 
 
@@ -359,7 +350,6 @@ class ADMIN
         if (isset($_SESSION['adminSession'])) {
             return true;
         }
-
     }
 
 
@@ -423,7 +413,6 @@ class ADMIN
             } else {
                 echo "<script>alert('Email not found or not active, please register the account first.'); window.location.href = '../../../';</script>";
             }
-
         } catch (PDOException $e) {
             echo $e->getMessage();
             echo "<script>alert('An error occurred. Please try again later.'); window.location.href = '../../../';</script>";
@@ -441,17 +430,17 @@ class ADMIN
             }
 
             unset($_SESSION['csrf_token']);
-    
+
             // Password match check
             if ($newPassword !== $confirmPassword) {
                 echo "<script>alert('Passwords do not match.'); window.history.back();</script>";
                 exit;
             }
-    
+
             // Hash password (use password_hash() instead of md5)
             //$hash_password = password_hash($newPassword, PASSWORD_DEFAULT);
             $hash_password = md5($newPassword);
-    
+
             // Find user by token
             $stmt = $this->runQuery("SELECT * FROM user WHERE tokencode = :token");
             $stmt->execute(array(":token" => $token));
@@ -459,8 +448,11 @@ class ADMIN
 
             if ($user) {
                 // Update password
-                $stmt = $this->runQuery("UPDATE user SET password = :password WHERE id = :id");
-                $stmt->execute(array(":password" => $hash_password, ":id" => $user['id']));
+                $stmt = $this->runQuery("UPDATE user SET password = :password, tokencode = NULL WHERE id = :id");
+                $stmt->execute([
+                    ":password" => $hash_password,
+                    ":id" => $user['id']
+                ]);
 
                 echo "<script>alert('Password has been reset successfully.'); window.location.href = '../../../';</script>";
             } else {
@@ -468,9 +460,6 @@ class ADMIN
             }
         }
     }
-
-
-
 }
 
 
@@ -506,7 +495,6 @@ if (isset($_POST['btn-verify'])) {
 
     $adminVerify = new ADMIN();
     $adminVerify->verifyOTP($username, $email, $password, $tokencode, $otp, $csrf_token);
-
 }
 
 if (isset($_POST['btn-signin'])) {
@@ -516,7 +504,6 @@ if (isset($_POST['btn-signin'])) {
 
     $adminSignin = new ADMIN();
     $adminSignin->adminSignin($email, $password, $csrf_token);
-
 }
 
 if (isset($_GET['admin_signout'])) {
@@ -556,5 +543,3 @@ if (isset($_POST['btn-reset-password'])) {
     $admin = new ADMIN();
     $admin->resetPassword($csrf_token, $token, $newPassword, $confirmPassword);
 }
-
-?>
