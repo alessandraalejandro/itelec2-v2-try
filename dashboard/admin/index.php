@@ -16,16 +16,25 @@ $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>ADMIN DASHBOARD</title>
+    <link rel="stylesheet" href="src/css/bootstrap.css">
+    <link rel="stylesheet" href="src/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../src/css/formStyle.css">
 </head>
+
 <body>
 
-    <h1>WELCOME <?php echo $user_data['email'] ?> </h1>
-    <button class="btn btn-danger"><a href="authentication/admin-class.php?admin_signout">SIGN OUT</a></button>
-    
+    <div class="card">
+        <h1>Welcome, <?php echo htmlspecialchars($user_data['email']); ?>!</h1>
+        <p>You have successfully logged in to the Admin Dashboard.</p>
+        <button><a href="authentication/admin-class.php?admin_signout" class="btn-logout">Sign Out</a></button>
+    </div>
+
 </body>
+
 </html>
